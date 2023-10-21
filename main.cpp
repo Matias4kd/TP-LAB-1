@@ -42,16 +42,29 @@ void cargar_jugadores(string jugadores[MAX_JUGADORES]){
 
 void cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], bool &primera_partida){
     
-    if(primera_partida){
-        cargar_jugadores(jugadores);
-        primera_partida = false;
-    }
     string mazo_completo[CARTAS]= {"10 CORAZON","10 PICA","10 TREBOL","10 DIAMENTE",
                                  "J CORAZON","J PICA","J TREEBOL","J DIAMANTE",
                                  "Q CORAZON","Q PICA","Q TREBOL","Q DIAMENTE",
                                  "K CORAZON","K PICA","K TREBOL","K DIAMANTE",
                                  "A CORAZON","A PICA","A TREBOL","A DIAMANTE",
                                 };
+    int posiciones_cartas[CARTAS] = {};
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    if(primera_partida){
+        cargar_jugadores(jugadores);
+        primera_partida = false;
+    }
+    
+
 
     
 }
