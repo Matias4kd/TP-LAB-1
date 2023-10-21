@@ -81,7 +81,7 @@ void repartir_cartas(int posiciones_cartas[CARTAS_TOTALES], int cartas_restantes
 
 }
 
-bool mano_regalada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES]){
+bool mano_en_orden(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES]){
 
     if(mazo_completo[cartas_J1[0]-1]=="10 CORAZON" || mazo_completo[cartas_J1[0]-1]=="10 PICA" || mazo_completo[cartas_J1[0]-1]=="10 TREBOL"|| mazo_completo[cartas_J1[0]-1]=="10 DIAMANTE"){
         if(mazo_completo[cartas_J1[1]-1]=="J CORAZON" || mazo_completo[cartas_J1[1]-1]=="J PICA" || mazo_completo[cartas_J1[1]-1]=="J TREBOL"|| mazo_completo[cartas_J1[1]-1]=="J DIAMANTE"){
@@ -186,7 +186,65 @@ int quien_arranca(string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGA
     return 3; // CONSULTAR QUE PASA SI EMPATAN EN TODOS LOS NUMEROS (TIRAR DADO?)
 }
 
+void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES],int cartas_restantes[CARTAS_RESTANTES], string jugadores[MAX_JUGADORES], int turno){
+    srand(time(NULL));
+    int dado = 0;
+    int tirar_dado;
 
+    cout << endl <<  "Es el turno de " << jugadores[turno] << ". Ingrese 1 para tirar el dado: ";
+    cin >> tirar_dado;
+    
+    while(tirar_dado != 1){
+        cout << endl <<  "Es el turno de " << jugadores[turno] << ". Ingrese 1 para tirar el dado: ";
+        cin >> tirar_dado;
+    }
+
+    if(tirar_dado == 1){
+        dado = rand()%7;
+    }
+    cout << endl << "El número del dado es: " << dado << endl;
+
+
+}
+
+
+void mezclar_restantes(){
+
+}
+
+
+void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],int cartas_restantes[CARTAS_RESTANTES],bool &mano_ordenada,int inicio,int &ronda){
+    int turno = inicio;
+
+    if(inicio == 0){
+        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores, turno);
+        mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
+        mezclar_restantes();    
+        turno = 1;
+
+        if(!mano_ordenada && turno == 1){
+            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+            mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
+            mezclar_restantes();
+            turno = 0;
+        }
+        
+
+    }else if(inicio == 1){
+        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+        mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
+        mezclar_restantes();
+        turno = 0;
+
+        if(!mano_ordenada && turno == 0){
+            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+            mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
+            mezclar_restantes();
+            turno = 1;
+        }
+    }
+    ronda++;
+}
 
 
 
@@ -209,8 +267,6 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     int ronda = 1;
 
    
-
-
     mezclar_mazo_completo(mazo_completo, posiciones_cartas); 
     
     if(primera_partida){
@@ -220,7 +276,7 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
 
     repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
 
-    while(mano_regalada(cartas_J1,cartas_J2, mazo_completo)){
+    while(mano_en_orden(cartas_J1,cartas_J2, mazo_completo)){
         mezclar_mazo_completo(mazo_completo, posiciones_cartas);
         repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
     }
@@ -238,7 +294,7 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     
     inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
     
-    while(inicio = 3){
+    while(inicio == 3){
         inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
     }
 
@@ -248,11 +304,11 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
         cout << endl<< "Arranca: " << jugadores[inicio] << endl;
     }
     
-    //while(!mano_ordenada){
+    while(!mano_ordenada){
 
+        jugar_ronda(jugadores,mazo_completo,cartas_J1,cartas_J2,cartas_restantes,mano_ordenada,inicio,ronda);
 
-
-    //}
+    }
 
     cout << "Ingrese 1 para regresar al menú principal: ";
     cin >> regreso;
