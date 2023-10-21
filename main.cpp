@@ -322,8 +322,6 @@ void cargar_autores (string autores[CANT_AUTORES]){
 }
 
 
-
-
 int main(){
 
     string jugadores[MAX_JUGADORES] = {};
