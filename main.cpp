@@ -11,7 +11,9 @@ using std::srand;
 
 #define MAX_JUGADORES 2
 #define CANT_AUTORES 3
-#define CARTAS 20
+#define CARTAS_TOTALES 20
+#define CARTAS_RESTANTES 10
+#define CARTAS_JUGADOR 5
 
 
 void cargar_jugadores(string jugadores[MAX_JUGADORES]){
@@ -39,33 +41,227 @@ void cargar_jugadores(string jugadores[MAX_JUGADORES]){
     }while(confirmacion != 'Y' && confirmacion != 'y');
 }
 
+bool se_repite_nro(int numero_random,int posiciones_cartas[CARTAS_TOTALES]){
+    for(int i = 0; i <= CARTAS_TOTALES; i++){
+        if(numero_random == posiciones_cartas[i]){
+            return true;
+        }
+    }
+    return false;
+}
 
-void cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], bool &primera_partida){
+void mezclar_mazo_completo(string mazo_completo[CARTAS_TOTALES],int posiciones_cartas[CARTAS_TOTALES]){
     
-    string mazo_completo[CARTAS]= {"10 CORAZON","10 PICA","10 TREBOL","10 DIAMENTE",
-                                 "J CORAZON","J PICA","J TREEBOL","J DIAMANTE",
-                                 "Q CORAZON","Q PICA","Q TREBOL","Q DIAMENTE",
+    int numero_random;
+    string auxiliar_mezcla;
+    
+    for(int i = 0; i < CARTAS_TOTALES;i++){
+        numero_random = rand()%21;
+
+        while(se_repite_nro(numero_random, posiciones_cartas)){
+            numero_random = rand()%21;
+        }
+
+        posiciones_cartas[i] = numero_random;
+    }   
+    
+}
+
+void repartir_cartas(int posiciones_cartas[CARTAS_TOTALES], int cartas_restantes[CARTAS_RESTANTES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR]){
+    bool cartas_servidas = false;
+    
+    for(int i = 0; i < CARTAS_JUGADOR;i++){
+        cartas_J1[i] =  posiciones_cartas[i];
+        cartas_J2[i] = posiciones_cartas[i+5];
+        
+    }
+    for(int i = 0; i < CARTAS_RESTANTES;i++){
+        cartas_restantes[i] = posiciones_cartas[i+10];
+    }
+
+}
+
+bool mano_regalada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES]){
+
+    if(mazo_completo[cartas_J1[0]-1]=="10 CORAZON" || mazo_completo[cartas_J1[0]-1]=="10 PICA" || mazo_completo[cartas_J1[0]-1]=="10 TREBOL"|| mazo_completo[cartas_J1[0]-1]=="10 DIAMANTE"){
+        if(mazo_completo[cartas_J1[1]-1]=="J CORAZON" || mazo_completo[cartas_J1[1]-1]=="J PICA" || mazo_completo[cartas_J1[1]-1]=="J TREBOL"|| mazo_completo[cartas_J1[1]-1]=="J DIAMANTE"){
+            if(mazo_completo[cartas_J1[2]-1]=="Q CORAZON" || mazo_completo[cartas_J1[2]-1]=="Q PICA" || mazo_completo[cartas_J1[2]-1]=="Q TREBOL"|| mazo_completo[cartas_J1[2]-1]=="Q DIAMANTE"){
+                if(mazo_completo[cartas_J1[3]-1]=="K CORAZON" || mazo_completo[cartas_J1[3]-1]=="K PICA" || mazo_completo[cartas_J1[3]-1]=="K TREBOL"|| mazo_completo[cartas_J1[3]-1]=="K DIAMANTE"){
+                    if(mazo_completo[cartas_J1[4]-1]=="A CORAZON" || mazo_completo[cartas_J1[4]-1]=="A PICA" || mazo_completo[cartas_J1[4]-1]=="A TREBOL"|| mazo_completo[cartas_J1[4]-1]=="A DIAMANTE"){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    if(mazo_completo[cartas_J2[0]-1]=="10 CORAZON" || mazo_completo[cartas_J2[0]-1]=="10 PICA" || mazo_completo[cartas_J2[0]-1]=="10 TREBOL"|| mazo_completo[cartas_J2[0]-1]=="10 DIAMANTE"){
+        if(mazo_completo[cartas_J2[1]-1]=="J CORAZON" || mazo_completo[cartas_J2[1]-1]=="J PICA" || mazo_completo[cartas_J2[1]-1]=="J TREBOL"|| mazo_completo[cartas_J2[1]-1]=="J DIAMANTE"){
+            if(mazo_completo[cartas_J2[2]-1]=="Q CORAZON" || mazo_completo[cartas_J2[2]-1]=="Q PICA" || mazo_completo[cartas_J2[2]-1]=="Q TREBOL"|| mazo_completo[cartas_J2[2]-1]=="Q DIAMANTE"){
+                if(mazo_completo[cartas_J2[3]-1]=="K CORAZON" || mazo_completo[cartas_J2[3]-1]=="K PICA" || mazo_completo[cartas_J2[3]-1]=="K TREBOL"|| mazo_completo[cartas_J2[3]-1]=="K DIAMANTE"){
+                    if(mazo_completo[cartas_J2[4]-1]=="A CORAZON" || mazo_completo[cartas_J2[4]-1]=="A PICA" || mazo_completo[cartas_J2[4]-1]=="A TREBOL"|| mazo_completo[cartas_J2[4]-1]=="A DIAMANTE"){
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+int quien_arranca(string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR]){
+    int contadores_cartas_j1[CARTAS_JUGADOR] = {}; // indice 0 corresponde a contador de Aces, de ahi de forma descendiente hasta el indice 4(contador de dieces).
+    int contadores_cartas_j2[CARTAS_JUGADOR] = {}; // indice 0 corresponde a contador de Aces, de ahi de forma descendiente hasta el indice 4(contador de dieces).
+
+    
+    for(int i = 0; i < CARTAS_JUGADOR; i++){
+
+        if(mazo_completo[cartas_J1[i]-1] == "A CORAZON"||mazo_completo[cartas_J1[i]-1] =="A PICA"||mazo_completo[cartas_J1[i]-1] =="A TREBOL"||mazo_completo[cartas_J1[i]-1] =="A DIAMANTE"){
+            contadores_cartas_j1[0]++;
+        }
+        if(mazo_completo[cartas_J2[i]-1] == "A CORAZON"||mazo_completo[cartas_J2[i]-1] =="A PICA"||mazo_completo[cartas_J2[i]-1] =="A TREBOL"||mazo_completo[cartas_J2[i]-1] =="A DIAMANTE"){
+            contadores_cartas_j2[0]++;
+        }
+
+        if(mazo_completo[cartas_J1[i]-1] == "K CORAZON"||mazo_completo[cartas_J1[i]-1] =="K PICA"||mazo_completo[cartas_J1[i]-1]=="K TREBOL"||mazo_completo[cartas_J1[i]-1]=="K DIAMANTE"){
+            contadores_cartas_j1[1]++;
+        }
+        if(mazo_completo[cartas_J2[i]-1] == "K CORAZON"||mazo_completo[cartas_J2[i]-1] =="K PICA"||mazo_completo[cartas_J2[i]-1]=="K TREBOL"||mazo_completo[cartas_J2[i]-1]=="K DIAMANTE"){
+            contadores_cartas_j2[1]++;
+        }
+
+        if(mazo_completo[cartas_J1[i]-1] == "Q CORAZON"||mazo_completo[cartas_J1[i]-1] =="Q PICA"||mazo_completo[cartas_J1[i]-1]=="Q TREBOL"||mazo_completo[cartas_J1[i]-1]=="Q DIAMANTE"){
+            contadores_cartas_j1[2]++;
+        }
+        if(mazo_completo[cartas_J2[i]-1] == "Q CORAZON"||mazo_completo[cartas_J2[i]-1] =="Q PICA"||mazo_completo[cartas_J2[i]-1]=="Q TREBOL"||mazo_completo[cartas_J2[i]-1]=="Q DIAMANTE"){
+            contadores_cartas_j2[2]++;
+        }
+
+        if(mazo_completo[cartas_J1[i]-1] == "J CORAZON"||mazo_completo[cartas_J1[i]-1] =="J PICA"||mazo_completo[cartas_J1[i]-1]=="J TREBOL"||mazo_completo[cartas_J1[i]-1]=="J DIAMANTE"){
+            contadores_cartas_j1[3]++;
+        }
+        if(mazo_completo[cartas_J2[i]-1] == "J CORAZON"||mazo_completo[cartas_J2[i]-1] =="J PICA"||mazo_completo[cartas_J2[i]-1]=="J TREBOL"||mazo_completo[cartas_J2[i]-1]=="J DIAMANTE"){
+            contadores_cartas_j2[3]++;
+        }
+
+        if(mazo_completo[cartas_J1[i]-1] == "10 CORAZON"||mazo_completo[cartas_J1[i]-1] =="10 PICA"||mazo_completo[cartas_J1[i]-1]=="10 TREBOL"||mazo_completo[cartas_J1[i]-1]=="10 DIAMANTE"){
+            contadores_cartas_j1[4]++;
+        }
+        if(mazo_completo[cartas_J2[i]-1] == "10 CORAZON"||mazo_completo[cartas_J2[i]-1] =="10 PICA"||mazo_completo[cartas_J2[i]-1]=="10 TREBOL"||mazo_completo[cartas_J2[i]-1]=="10 DIAMANTE"){
+            contadores_cartas_j2[4]++;
+        }
+    }
+
+    if(contadores_cartas_j1[0] > contadores_cartas_j2[0]){
+        return 0;
+    }else if(contadores_cartas_j1[0] < contadores_cartas_j2[0]){
+        return 1;
+    }
+
+    if(contadores_cartas_j1[1] > contadores_cartas_j2[1]){
+        return 0;
+    }else if(contadores_cartas_j1[1] < contadores_cartas_j2[1]){
+        return 1;
+    }
+
+    if(contadores_cartas_j1[2] > contadores_cartas_j2[2]){
+        return 0;
+    }else if(contadores_cartas_j1[2] < contadores_cartas_j2[2]){
+        return 1;
+    }
+
+    if(contadores_cartas_j1[3] > contadores_cartas_j2[3]){
+        return 0;
+    }else if(contadores_cartas_j1[3] < contadores_cartas_j2[3]){
+        return 1;
+    }
+
+    if(contadores_cartas_j1[4] > contadores_cartas_j2[4]){
+        return 0;
+    }else if(contadores_cartas_j1[4] < contadores_cartas_j2[4]){
+        return 1;
+    }
+
+    return 3; // CONSULTAR QUE PASA SI EMPATAN EN TODOS LOS NUMEROS (TIRAR DADO?)
+}
+
+
+
+
+
+int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], bool &primera_partida){
+    int regreso;
+
+    srand(time(NULL));
+    string mazo_completo[CARTAS_TOTALES]= {"10 CORAZON","10 PICA","10 TREBOL","10 DIAMANTE",
+                                 "J CORAZON","J PICA","J TREBOL","J DIAMANTE",
+                                 "Q CORAZON","Q PICA","Q TREBOL","Q DIAMANTE",
                                  "K CORAZON","K PICA","K TREBOL","K DIAMANTE",
                                  "A CORAZON","A PICA","A TREBOL","A DIAMANTE",
                                 };
-    int posiciones_cartas[CARTAS] = {};
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    int posiciones_cartas[CARTAS_TOTALES] = {};
+    int cartas_restantes[CARTAS_RESTANTES] = {};
+    int cartas_J1[CARTAS_JUGADOR] = {};
+    int cartas_J2[CARTAS_JUGADOR] = {};
+    bool mano_ordenada = false;
+    int inicio = 0;
+    int ronda = 1;
+
+   
+
+
+    mezclar_mazo_completo(mazo_completo, posiciones_cartas); 
     
     if(primera_partida){
         cargar_jugadores(jugadores);
         primera_partida = false;
     }
+
+    repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
+
+    while(mano_regalada(cartas_J1,cartas_J2, mazo_completo)){
+        mezclar_mazo_completo(mazo_completo, posiciones_cartas);
+        repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
+    }
     
+    cout << endl << "----------------------" << endl;
+    cout << "Cartas "<< jugadores[0] << ": " << endl << endl;
+    for(int i = 0; i < CARTAS_JUGADOR; i++){
+        cout << mazo_completo[cartas_J1[i]-1] << endl;
+    }
+    cout << endl << "----------------------" << endl;
+    cout << "Cartas "<< jugadores[1] << ": " << endl << endl;
+    for(int i = 0; i < CARTAS_JUGADOR; i++){
+        cout << mazo_completo[cartas_J2[i]-1]  << endl;
+    }
+    
+    inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
+    
+    while(inicio = 3){
+        inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
+    }
+
+    if(inicio == 0){
+        cout << endl<< "Arranca: " << jugadores[inicio] << endl;
+    }else if(inicio == 1){
+        cout << endl<< "Arranca: " << jugadores[inicio] << endl;
+    }
+    
+    //while(!mano_ordenada){
 
 
+
+    //}
+
+    cout << "Ingrese 1 para regresar al menú principal: ";
+    cin >> regreso;
+
+    while(regreso != 1){
+        cout << "Ingrese 1 para regresar al menú principal: ";
+        cin >> regreso;
+    }
+    return regreso;
     
 }
 
