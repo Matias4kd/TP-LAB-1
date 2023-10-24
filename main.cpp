@@ -186,10 +186,28 @@ int quien_arranca(string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGA
     return 3; // CONSULTAR QUE PASA SI EMPATAN EN TODOS LOS NUMEROS (TIRAR DADO?)
 }
 
-void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES],int cartas_restantes[CARTAS_RESTANTES], string jugadores[MAX_JUGADORES], int turno){
+
+void imprimir_cartas(string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR],string jugadores[MAX_JUGADORES]){
+    cout << endl << "----------------------" << endl;
+    cout << "Cartas "<< jugadores[0] << ": " << endl << endl;
+    for(int i = 0; i < CARTAS_JUGADOR; i++){
+        cout << "Carta# " << i+1 <<": " << mazo_completo[cartas_J1[i]-1] << endl;
+    }
+    cout << endl << "----------------------" << endl;
+    cout << "Cartas "<< jugadores[1] << ": " << endl << endl;
+    for(int i = 0; i < CARTAS_JUGADOR; i++){
+        cout << "Carta# " << i+1 <<": " << mazo_completo[cartas_J2[i]-1]  << endl;
+    }
+}
+
+
+void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES],int cartas_restantes[CARTAS_RESTANTES], string jugadores[MAX_JUGADORES], int turno,int &carta_bloqueada_J1 ,int &carta_bloqueada_J2){
     srand(time(NULL));
     int dado = 0;
     int tirar_dado;
+    int auxiliar_jugada;
+    int carta_seleccionada;
+    int auxiliar_seleccion;
 
     cout << endl <<  "Es el turno de " << jugadores[turno] << ". Ingrese 1 para tirar el dado: ";
     cin >> tirar_dado;
@@ -200,46 +218,224 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
     }
 
     if(tirar_dado == 1){
-        dado = rand()%7;
+        dado = rand()%6 + 1;
     }
     cout << endl << "El número del dado es: " << dado << endl;
 
+    if(dado == 6){
+        cout << "Sacaste 6!" << endl << "Podes elegir que accion tomar (1 a 5) o ingresar 0 para pasar tu turno: ";
+        cin >> dado;
+    }
 
+   if(dado != 0){   
+        switch (dado)
+        {
+        case 1:
+
+            if(turno == 0){
+                cout << "Seleccione que carta de su corral desea intercambiar con una del mazo (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
+                cartas_J1[carta_seleccionada-1] = cartas_restantes[0];
+                cartas_restantes[0] = auxiliar_jugada;
+            
+            }else if(turno == 1){
+                cout << "Seleccione que carta de su corral desea intercambiar con una del mazo (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
+                cartas_J2[carta_seleccionada-1] = cartas_restantes[0];
+                cartas_restantes[0] = auxiliar_jugada;
+            }
+
+            break;
+
+        case 2:
+
+            if(turno == 0){
+                cout << "Seleccione que carta de "<< jugadores[1] << " desea intercambiar con una del mazo (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                while(carta_seleccionada == carta_bloqueada_J2){
+                    cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
+                    cin >> carta_seleccionada;
+                }
+
+                auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
+                cartas_J2[carta_seleccionada-1] = cartas_restantes[0];
+                cartas_restantes[0] = auxiliar_jugada;
+            
+            
+            }else if(turno == 1){
+                cout << "Seleccione que carta de "<< jugadores[0] << " desea intercambiar con una del mazo (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                while(carta_seleccionada == carta_bloqueada_J1){
+                    cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
+                    cin >> carta_seleccionada;
+                }
+
+                auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
+                cartas_J1[carta_seleccionada-1] = cartas_restantes[0];
+                cartas_restantes[0] = auxiliar_jugada;
+            
+            }
+
+            break;
+    
+        case 3:
+            if(turno == 0){
+                cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[1] << " (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
+
+                cout << "Seleccione que carta le robas a "<< jugadores[1] << " (1 a 5): ";
+                cin >> auxiliar_seleccion;
+
+                while(auxiliar_seleccion == carta_bloqueada_J2){
+                    cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
+                    cin >> auxiliar_seleccion;
+                }
+
+                cartas_J1[carta_seleccionada-1] = cartas_J2[auxiliar_seleccion-1];
+                cartas_J2[auxiliar_seleccion-1] = auxiliar_jugada;
+            
+            
+            }else if(turno == 1){
+                cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[0] << " (1 a 5): ";
+                cin >> carta_seleccionada;
+
+                auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
+
+                cout << "Seleccione que carta le robas a "<< jugadores[0] << " (1 a 5): ";
+                cin >> auxiliar_seleccion;
+
+                while(auxiliar_seleccion == carta_bloqueada_J1){
+                    cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
+                    cin >> auxiliar_seleccion;
+                }
+
+                cartas_J2[carta_seleccionada-1] = cartas_J1[auxiliar_seleccion-1];
+                cartas_J1[auxiliar_seleccion-1] = auxiliar_jugada;
+            
+            }
+
+            break;
+
+        case 4:
+            if(turno == 0){
+                cout << jugadores[0] <<" Selecciona dos cartas para cambiar de lugar dentro de tu corral:" << endl;
+                cout << "Carta #1: ";
+                cin >> carta_seleccionada;
+                cout << "Carta #2: ";
+                cin >> auxiliar_seleccion;
+
+                auxiliar_jugada = cartas_J1[carta_seleccionada -1];
+                cartas_J1[carta_seleccionada-1] = cartas_J1[auxiliar_seleccion -1];
+                cartas_J1[auxiliar_seleccion -1] = auxiliar_jugada;
+            
+            
+            }else if(turno == 1){
+                cout << jugadores[1] <<" Selecciona dos cartas para cambiar de lugar dentro de tu corral:" << endl;
+                cout << "Carta #1: ";
+                cin >> carta_seleccionada;
+                cout << "Carta #2: ";
+                cin >> auxiliar_seleccion;
+
+                auxiliar_jugada = cartas_J2[carta_seleccionada -1];
+                cartas_J2[carta_seleccionada-1] = cartas_J2[auxiliar_seleccion -1];
+                cartas_J2[auxiliar_seleccion -1] = auxiliar_jugada;
+            
+            }
+            break;
+    
+        case 5: //consultar si la carta permanece bloqueada despues de que uno mismo la mueva o por el resto del juego.
+            if(turno == 0){
+                cout << jugadores[0] <<" Selecciona una carta para que no pueda ser intercambiada/robada por " <<jugadores[1] << endl;
+                cin >> carta_bloqueada_J1;            
+            
+            
+            }else if(turno == 1){
+                cout << jugadores[1] <<" Selecciona una carta para que no pueda ser intercambiada/robada por " <<jugadores[0] << endl;
+                cin >> carta_bloqueada_J2;  
+            }
+            break;
+
+        }
+    }
 }
 
 
-void mezclar_restantes(){
+/*
+void mezclar_restantes(int cartas_restantes[CARTAS_RESTANTES]){
+    int auxiliar_cartas_restantes[CARTAS_RESTANTES];
+    int numero_random;
+    int numero_anterior = 0;
 
+    for(int i = 0; i < CARTAS_RESTANTES; i++){
+        auxiliar_cartas_restantes[i] = cartas_restantes[i];
+    }
+
+    for(int i = 0; i < CARTAS_RESTANTES; i++){
+        numero_random = rand()%11;
+
+        while(numero_random == numero_anterior){
+            numero_random = rand()%11;
+        }
+
+        numero_anterior = numero_random;
+        cartas_restantes[numero_random-1] = auxiliar_cartas_restantes[i];
+    }
+
+}
+*/
+void imprimir_mazo(int cartas_restantes[CARTAS_RESTANTES],string mazo_completo[CARTAS_TOTALES]){
+
+    cout << "MAZO RESTANTE: " << endl;
+    for(int i = 0; i < CARTAS_RESTANTES; i++){
+
+        cout << mazo_completo[cartas_restantes[i]-1] << endl;
+    }
 }
 
 
-void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],int cartas_restantes[CARTAS_RESTANTES],bool &mano_ordenada,int inicio,int &ronda){
+void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],int cartas_restantes[CARTAS_RESTANTES],bool &mano_ordenada,int inicio,int &ronda, int &carta_bloqueada_J1 ,int &carta_bloqueada_J2){
     int turno = inicio;
 
     if(inicio == 0){
-        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores, turno);
+        imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+        imprimir_mazo(cartas_restantes,mazo_completo);
+        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores, turno,carta_bloqueada_J1 , carta_bloqueada_J2);
         mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-        mezclar_restantes();    
+        //mezclar_restantes(cartas_restantes);    
         turno = 1;
 
         if(!mano_ordenada && turno == 1){
-            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+            imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+            imprimir_mazo(cartas_restantes,mazo_completo);
+            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
             mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-            mezclar_restantes();
+            //mezclar_restantes(cartas_restantes);
             turno = 0;
         }
         
 
     }else if(inicio == 1){
-        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+        imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+        imprimir_mazo(cartas_restantes,mazo_completo);
+        jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
         mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-        mezclar_restantes();
+        //mezclar_restantes(cartas_restantes);
         turno = 0;
 
         if(!mano_ordenada && turno == 0){
-            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno);
+            imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+            imprimir_mazo(cartas_restantes,mazo_completo);
+            jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
             mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-            mezclar_restantes();
+            //mezclar_restantes(cartas_restantes);
             turno = 1;
         }
     }
@@ -265,6 +461,7 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     bool mano_ordenada = false;
     int inicio = 0;
     int ronda = 1;
+    int carta_bloqueada_J1 , carta_bloqueada_J2;
 
    
     mezclar_mazo_completo(mazo_completo, posiciones_cartas); 
@@ -281,17 +478,6 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
         repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
     }
     
-    cout << endl << "----------------------" << endl;
-    cout << "Cartas "<< jugadores[0] << ": " << endl << endl;
-    for(int i = 0; i < CARTAS_JUGADOR; i++){
-        cout << mazo_completo[cartas_J1[i]-1] << endl;
-    }
-    cout << endl << "----------------------" << endl;
-    cout << "Cartas "<< jugadores[1] << ": " << endl << endl;
-    for(int i = 0; i < CARTAS_JUGADOR; i++){
-        cout << mazo_completo[cartas_J2[i]-1]  << endl;
-    }
-    
     inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
     
     while(inicio == 3){
@@ -306,7 +492,7 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     
     while(!mano_ordenada){
 
-        jugar_ronda(jugadores,mazo_completo,cartas_J1,cartas_J2,cartas_restantes,mano_ordenada,inicio,ronda);
+        jugar_ronda(jugadores,mazo_completo,cartas_J1,cartas_J2,cartas_restantes,mano_ordenada,inicio,ronda,carta_bloqueada_J1 , carta_bloqueada_J2);
 
     }
 
