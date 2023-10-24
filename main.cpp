@@ -58,7 +58,7 @@ void mezclar_mazo_completo(string mazo_completo[CARTAS_TOTALES],int posiciones_c
     for(int i = 0; i < CARTAS_TOTALES;i++){
         numero_random = rand()%21;
 
-        while(se_repite_nro(numero_random, posiciones_cartas)){
+        while(se_repite_nro(numero_random, posiciones_cartas)|| numero_random == 0){
             numero_random = rand()%21;
         }
 
@@ -186,7 +186,6 @@ int quien_arranca(string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGA
     return 3; // CONSULTAR QUE PASA SI EMPATAN EN TODOS LOS NUMEROS (TIRAR DADO?)
 }
 
-
 void imprimir_cartas(string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR],string jugadores[MAX_JUGADORES]){
     cout << endl << "----------------------" << endl;
     cout << "Cartas "<< jugadores[0] << ": " << endl << endl;
@@ -199,7 +198,6 @@ void imprimir_cartas(string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_
         cout << "Carta# " << i+1 <<": " << mazo_completo[cartas_J2[i]-1]  << endl;
     }
 }
-
 
 void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES],int cartas_restantes[CARTAS_RESTANTES], string jugadores[MAX_JUGADORES], int turno,int &carta_bloqueada_J1 ,int &carta_bloqueada_J2){
     srand(time(NULL));
@@ -367,75 +365,89 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
     }
 }
 
+bool se_repite_mezcla(int numero_random,int posiciones_nuevas[CARTAS_RESTANTES]){
+    for(int i = 0; i < CARTAS_RESTANTES; i++){
+        if(numero_random == posiciones_nuevas[i]){
+            return true;
+        }
+    }
+    return false;
+}
 
-/*
 void mezclar_restantes(int cartas_restantes[CARTAS_RESTANTES]){
     int auxiliar_cartas_restantes[CARTAS_RESTANTES];
     int numero_random;
-    int numero_anterior = 0;
+    int posiciones_nuevas[CARTAS_RESTANTES] = {};
 
     for(int i = 0; i < CARTAS_RESTANTES; i++){
         auxiliar_cartas_restantes[i] = cartas_restantes[i];
     }
 
     for(int i = 0; i < CARTAS_RESTANTES; i++){
+
         numero_random = rand()%11;
 
-        while(numero_random == numero_anterior){
+        while(se_repite_mezcla(numero_random,posiciones_nuevas) || numero_random == 0){
             numero_random = rand()%11;
         }
+        posiciones_nuevas[i] = numero_random;
+    }
 
-        numero_anterior = numero_random;
-        cartas_restantes[numero_random-1] = auxiliar_cartas_restantes[i];
+    for(int i = 0; i < CARTAS_RESTANTES; i++){
+        cartas_restantes[posiciones_nuevas[i]-1] = auxiliar_cartas_restantes[i];
     }
 
 }
-*/
+/*
 void imprimir_mazo(int cartas_restantes[CARTAS_RESTANTES],string mazo_completo[CARTAS_TOTALES]){
 
-    cout << "MAZO RESTANTE: " << endl;
+    cout << endl << "MAZO RESTANTE: " << endl;
     for(int i = 0; i < CARTAS_RESTANTES; i++){
 
         cout << mazo_completo[cartas_restantes[i]-1] << endl;
     }
 }
-
+*/
 
 void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],int cartas_restantes[CARTAS_RESTANTES],bool &mano_ordenada,int inicio,int &ronda, int &carta_bloqueada_J1 ,int &carta_bloqueada_J2){
     int turno = inicio;
-
+    
     if(inicio == 0){
+        cout << endl <<  "Ronda #: " << ronda << endl;
         imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
-        imprimir_mazo(cartas_restantes,mazo_completo);
+        //imprimir_mazo(cartas_restantes,mazo_completo);
         jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores, turno,carta_bloqueada_J1 , carta_bloqueada_J2);
         mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-        //mezclar_restantes(cartas_restantes);    
+        mezclar_restantes(cartas_restantes);    
         turno = 1;
 
         if(!mano_ordenada && turno == 1){
+            cout << endl <<  "Ronda #: " << ronda << endl;
             imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
-            imprimir_mazo(cartas_restantes,mazo_completo);
+            //imprimir_mazo(cartas_restantes,mazo_completo);
             jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
             mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-            //mezclar_restantes(cartas_restantes);
+            mezclar_restantes(cartas_restantes);
             turno = 0;
         }
         
 
     }else if(inicio == 1){
+        cout << endl <<  "Ronda #: " << ronda << endl;
         imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
-        imprimir_mazo(cartas_restantes,mazo_completo);
+        //imprimir_mazo(cartas_restantes,mazo_completo);
         jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
         mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-        //mezclar_restantes(cartas_restantes);
+        mezclar_restantes(cartas_restantes);
         turno = 0;
 
         if(!mano_ordenada && turno == 0){
+            cout << endl <<  "Ronda #: " << ronda << endl;
             imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
-            imprimir_mazo(cartas_restantes,mazo_completo);
+            //imprimir_mazo(cartas_restantes,mazo_completo);
             jugada(cartas_J1,cartas_J2,mazo_completo,cartas_restantes,jugadores,turno,carta_bloqueada_J1 , carta_bloqueada_J2);
             mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
-            //mezclar_restantes(cartas_restantes);
+            mezclar_restantes(cartas_restantes);
             turno = 1;
         }
     }
@@ -528,7 +540,7 @@ int mostrar_estadisticas(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGAD
 }
 
 //Entrada: vecctor de autores.
-//acción: Impreime el contenido del vector de autores para mostrar los creditos.
+//acción: Imprime el contenido del vector de autores para mostrar los creditos.
 int imprimir_Creditos(string autores[CANT_AUTORES]){
     
     cout << endl;
