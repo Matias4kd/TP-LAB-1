@@ -462,6 +462,7 @@ void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOT
         mano_ordenada = mano_en_orden(cartas_J1,cartas_J2, mazo_completo);
         if(mano_ordenada){
             ganador = 0;
+            imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
         }
         mezclar_restantes(cartas_restantes);    
         turno = 1;
@@ -477,6 +478,7 @@ void jugar_ronda(string jugadores[MAX_JUGADORES],string mazo_completo[CARTAS_TOT
             mezclar_restantes(cartas_restantes);
             if(mano_ordenada){
                 ganador = 1;
+                imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
             }
             turno = 0;
         }
@@ -536,7 +538,7 @@ int contar_mal_ubicadas(int jugador[CARTAS_JUGADOR], string mazo_completo[CARTAS
         contador_mal_ubicadas++;
     }
 
-    if(mazo_completo[jugador[4]-1] !="A CORAZON" && mazo_completo[jugador[4]-1]!="A PICA" || mazo_completo[jugador[4]-1]!="A TREBOL"|| mazo_completo[jugador[4]-1]!="A DIAMANTE"){
+    if(mazo_completo[jugador[4]-1] !="A CORAZON" && mazo_completo[jugador[4]-1]!="A PICA" || mazo_completo[jugador[4]-1]!="A TREBOL" && mazo_completo[jugador[4]-1]!="A DIAMANTE"){
         contador_mal_ubicadas++;
     }
        
