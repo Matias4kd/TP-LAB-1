@@ -680,7 +680,8 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     bool mano_ordenada = false;
     int inicio = 0;
     int ronda = 1;
-    int carta_bloqueada_J1 , carta_bloqueada_J2;
+    int carta_bloqueada_J1 = 0;
+    int carta_bloqueada_J2 = 0;
     
     //datos para suma de puntos
     int ganador;

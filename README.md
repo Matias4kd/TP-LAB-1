@@ -6,11 +6,6 @@
 NOTAS A TENER EN CUENTA:
 
 
-- CONSULTAR POR DADOS PARA DECIDIR TURNO EN CASO DE EMPATE
-
-
-
-
 PARA PEDIR QUE TIRE EL DADO:
 
 cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl << "Ingrese 1 para tirar el dado: ";
