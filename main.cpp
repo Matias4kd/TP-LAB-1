@@ -538,7 +538,7 @@ int contar_mal_ubicadas(int jugador[CARTAS_JUGADOR], string mazo_completo[CARTAS
         contador_mal_ubicadas++;
     }
 
-    if(mazo_completo[jugador[4]-1] !="A CORAZON" && mazo_completo[jugador[4]-1]!="A PICA" || mazo_completo[jugador[4]-1]!="A TREBOL" && mazo_completo[jugador[4]-1]!="A DIAMANTE"){
+    if(mazo_completo[jugador[4]-1] !="A CORAZON" && mazo_completo[jugador[4]-1]!="A PICA" && mazo_completo[jugador[4]-1]!="A TREBOL" && mazo_completo[jugador[4]-1]!="A DIAMANTE"){
         contador_mal_ubicadas++;
     }
        
