@@ -224,17 +224,10 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
     int carta_seleccionada;
     int auxiliar_seleccion;
 
-    cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl << "Ingrese 1 para tirar el dado: ";
-    cin >> tirar_dado;
+    cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl;
     
-    while(tirar_dado != 1){
-        cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl << "Ingrese 1 para tirar el dado: ";
-        cin >> tirar_dado;
-    }
-
-    if(tirar_dado == 1){
-        dado = rand()%6 + 1;
-    }
+    dado = rand()%6 + 1;
+    
     cout << endl << "El número del dado es: " << dado << endl;
 
     if(dado == 6){
@@ -839,7 +832,13 @@ int main(){
                 cargar_juego(jugadores, puntajes, primera_partida);
                 break;
             case 2:
-                mostrar_estadisticas(jugadores, puntajes);
+                
+                if(primera_partida){
+                    cout << "No se jugaron partidas aún. No hay estadísticas para mostrar" << endl << endl;
+                }else{
+                    mostrar_estadisticas(jugadores, puntajes);
+                }
+                
                 break;
             case 3:
                 imprimir_Creditos(autores);         
