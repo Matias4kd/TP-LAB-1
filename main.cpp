@@ -194,7 +194,7 @@ int quien_arranca(string mazo_completo[CARTAS_TOTALES],int cartas_J1[CARTAS_JUGA
         return 1;
     }
 
-    return 3; // CONSULTAR QUE PASA SI EMPATAN EN TODOS LOS NUMEROS (TIRAR DADO?)
+    return 3; 
 }
 
 //Entrada: Recibe las manos de los jugadores, el vector de jugadores y el mazo de cartas.
@@ -210,6 +210,17 @@ void imprimir_cartas(string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_
     for(int i = 0; i < CARTAS_JUGADOR; i++){
         cout << "Carta# " << i+1 <<": " << mazo_completo[cartas_J2[i]-1]  << endl;
     }
+}
+
+//Entrada: Recibe la carta seleccionada al realizar una jugada.
+//Salida: Solicita re ingresar un valor valido hasta que esto se cumpla.
+void verificar_seleccion(int &carta_seleccionada){
+
+    while(carta_seleccionada < 1 || carta_seleccionada > 5){
+        cout << "Seleccione una carta valida (1 a 5): ";
+        cin >> carta_seleccionada;
+    }
+
 }
 
 //Entrada: Recibe toda la informacion necesaria para realizr la jugada y almacenar procesos.
@@ -243,6 +254,7 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             if(turno == 0){
                 cout << "Seleccione que carta de su corral desea intercambiar con una del mazo (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
                 cartas_J1[carta_seleccionada-1] = cartas_restantes[0];
@@ -251,6 +263,7 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             }else if(turno == 1){
                 cout << "Seleccione que carta de su corral desea intercambiar con una del mazo (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
                 cartas_J2[carta_seleccionada-1] = cartas_restantes[0];
@@ -264,10 +277,12 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             if(turno == 0){
                 cout << "Seleccione que carta de "<< jugadores[1] << " desea intercambiar con una del mazo (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 while(carta_seleccionada == carta_bloqueada_J2){
                     cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
                     cin >> carta_seleccionada;
+                    verificar_seleccion(carta_seleccionada);
                 }
 
                 auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
@@ -278,10 +293,12 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             }else if(turno == 1){
                 cout << "Seleccione que carta de "<< jugadores[0] << " desea intercambiar con una del mazo (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 while(carta_seleccionada == carta_bloqueada_J1){
                     cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
                     cin >> carta_seleccionada;
+                    verificar_seleccion(carta_seleccionada);
                 }
 
                 auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
@@ -296,15 +313,18 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             if(turno == 0){
                 cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[1] << " (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
 
                 cout << "Seleccione que carta le robas a "<< jugadores[1] << " (1 a 5): ";
                 cin >> auxiliar_seleccion;
+                verificar_seleccion(auxiliar_seleccion);
 
                 while(auxiliar_seleccion == carta_bloqueada_J2){
                     cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
                     cin >> auxiliar_seleccion;
+                    verificar_seleccion(auxiliar_seleccion);
                 }
 
                 cartas_J1[carta_seleccionada-1] = cartas_J2[auxiliar_seleccion-1];
@@ -316,15 +336,18 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             }else if(turno == 1){
                 cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[0] << " (1 a 5): ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
 
                 auxiliar_jugada = cartas_J2[carta_seleccionada - 1];
 
                 cout << "Seleccione que carta le robas a "<< jugadores[0] << " (1 a 5): ";
                 cin >> auxiliar_seleccion;
+                verificar_seleccion(auxiliar_seleccion);
 
                 while(auxiliar_seleccion == carta_bloqueada_J1){
                     cout << "Esa carta se encuentra bloqueada, elija una diferente: ";
                     cin >> auxiliar_seleccion;
+                    verificar_seleccion(auxiliar_seleccion);
                 }
 
                 cartas_J2[carta_seleccionada-1] = cartas_J1[auxiliar_seleccion-1];
@@ -341,8 +364,10 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
                 cout << jugadores[0] <<" Selecciona dos cartas para cambiar de lugar dentro de tu corral:" << endl;
                 cout << "Carta #1: ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
                 cout << "Carta #2: ";
                 cin >> auxiliar_seleccion;
+                verificar_seleccion(auxiliar_seleccion);
 
                 auxiliar_jugada = cartas_J1[carta_seleccionada -1];
                 cartas_J1[carta_seleccionada-1] = cartas_J1[auxiliar_seleccion -1];
@@ -353,8 +378,10 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
                 cout << jugadores[1] <<" Selecciona dos cartas para cambiar de lugar dentro de tu corral:" << endl;
                 cout << "Carta #1: ";
                 cin >> carta_seleccionada;
+                verificar_seleccion(carta_seleccionada);
                 cout << "Carta #2: ";
                 cin >> auxiliar_seleccion;
+                verificar_seleccion(auxiliar_seleccion);
 
                 auxiliar_jugada = cartas_J2[carta_seleccionada -1];
                 cartas_J2[carta_seleccionada-1] = cartas_J2[auxiliar_seleccion -1];
@@ -681,7 +708,19 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
     
     while(inicio == 3){
-        inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
+        int dadoJ1;
+        int dadoJ2;
+
+        dadoJ1 = rand()%6;
+        dadoJ2 = rand()%6;
+        
+        if(dadoJ1 > dadoJ2){
+            inicio = 0;
+        }else if(dadoJ2 > dadoJ1){
+            inicio = 1;
+        }else{
+            inicio = 3;
+        }
     }
 
     if(inicio == 0){
