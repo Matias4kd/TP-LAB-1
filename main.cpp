@@ -335,13 +335,13 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
     
         case 3:
             if(turno == 0){
-                cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[1] << " (1 a 5): ";
+                cout << "Selecciona una carta de tu corral para intercambiar con " << jugadores[1] << " (1 a 5): ";
                 cin >> carta_seleccionada;
                 verificar_seleccion(carta_seleccionada);
 
                 auxiliar_jugada = cartas_J1[carta_seleccionada - 1];
 
-                cout << "Seleccione que carta le robas a "<< jugadores[1] << " (1 a 5): ";
+                cout << "Selecciona que carta le robas a "<< jugadores[1] << " (1 a 5): ";
                 cin >> auxiliar_seleccion;
                 verificar_seleccion(auxiliar_seleccion);
 
@@ -358,7 +358,7 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             
             
             }else if(turno == 1){
-                cout << "Seleccione que carta de tu corral para intercambiar con " << jugadores[0] << " (1 a 5): ";
+                cout << "Selecciona una carta de tu corral para intercambiar con " << jugadores[0] << " (1 a 5): ";
                 cin >> carta_seleccionada;
                 verificar_seleccion(carta_seleccionada);
 
@@ -414,7 +414,7 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
             }
             break;
     
-        case 5: //consultar si la carta permanece bloqueada despues de que uno mismo la mueva o por el resto del juego.
+        case 5: 
             if(turno == 0){
                 cout << jugadores[0] <<" Selecciona una carta para que no pueda ser intercambiada/robada por " <<jugadores[1] << " (1 a 5): ";
                 cin >> carta_bloqueada_J1;            
