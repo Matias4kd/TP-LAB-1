@@ -238,12 +238,36 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
     cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl;
     
     dado = rand()%6 + 1;
-    
     cout << endl << "El número del dado es: " << dado << endl;
 
     if(dado == 6){
-        cout << "Sacaste 6!" << endl << "Podes elegir que accion tomar (1 a 5) o ingresar 0 para pasar tu turno: ";
+        cout << "Sacaste 6!" << endl << "Podes elegir que accion tomar:" << endl << endl;
+        cout << "Ingrese 0 para saltar el turno." << endl;
+        cout << "Ingrese 1 para elegir una carta de su propio corral (1-5) y robar una carta del mazo." <<endl;
+        if(turno == 0){
+            cout << "Ingrese 2 para elegir una carta de "<< jugadores[1] << " a intercambiar con una del mazo." << endl;
+        }else if(turno == 1){
+            cout << "Ingrese 2 para elegir una carta de "<< jugadores[0] << " a intercambiar con una del mazo." << endl;    
+        }
+        if(turno == 0){
+            cout << "Ingrese 3 para intercambiar una carta con "<< jugadores[1] << "." <<  endl;
+        }else if(turno == 1){
+            cout << "Ingrese 3 para intercambiar una carta con "<< jugadores[0] << "." << endl;    
+        }
+        cout << "Ingrese 4 para cambiar dos cartas de tu propio corral." <<endl;
+        if(turno == 0){
+            cout << "Ingrese 5 para bloquear una carta de tu corral para que no sea robada/intercambiada por "<< jugadores[1] << "." << endl << endl;
+        }else if(turno == 1){
+            cout << "Ingrese 5 para bloquear una carta de tu corral para que no sea robada/intercambiada por "<< jugadores[0] << "." << endl << endl;    
+        }
+        
+        cout << "Ingrese su opcion: ";
         cin >> dado;
+
+        while(dado < 0 || dado > 5){
+            cout << "Seleccione una opcion valida (0 - 5): ";
+            cin >> dado;
+        }
     }
 
    if(dado != 0){   
