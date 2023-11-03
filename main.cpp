@@ -237,7 +237,8 @@ void jugada(int cartas_J1[CARTAS_JUGADOR],int cartas_J2[CARTAS_JUGADOR],string m
 
     cout << endl <<  "TURNO DE: " << jugadores[turno] << "."<< endl;
     
-    dado = rand()%6 + 1;
+    //dado = rand()%6 + 1;
+    dado = 6;
     cout << endl << "El número del dado es: " << dado << endl;
 
     if(dado == 6){
@@ -592,13 +593,15 @@ int contar_mal_ubicadas(int jugador[CARTAS_JUGADOR], string mazo_completo[CARTAS
 //Entrada:Recibe los datos necesarios para realizar el calculo del puntaje al finalizar la partida.
 //Salida: Imprime por pantalla el resultado de la partida.
 void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool J1_robado,bool J2_robado,bool J1_salta_turno,bool J2_salta_turno, int ganador, 
-  string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR],string jugadores[MAX_JUGADORES]){
+  string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR],string jugadores[MAX_JUGADORES],
+  int bien_ubicadas_inicio_J1,int bien_ubicadas_inicio_J2){
 
     int const PUNTOS_POR_VICTORIA = 15;
     int const PUNTOS_FINAL_ROBO = 10;
     int const PUNTOS_MALA_UBICACION = 5;
     int const PUNTOS_SIN_PASAR = 10;
     int const PUNTOS_SIN_ROBO = 5;
+    int const PUNTOS_BIEN_UBICADAS_INICIO = 5;
 
     int puntos_J1 = 0;
     int puntos_J2 = 0;
@@ -607,9 +610,13 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
     int total_final_robo = 0;
     int total_sin_pasar = 0;
     int total_sin_robo = 0;
+    int total_bien_ubicadas_inicio = 0;
     
     if(ganador == 0){
         puntos_J1 += PUNTOS_POR_VICTORIA;
+
+        total_bien_ubicadas_inicio = bien_ubicadas_inicio_J1*PUNTOS_BIEN_UBICADAS_INICIO;
+        puntos_J1 += total_bien_ubicadas_inicio;
 
         if(ultimo_evento == 3){
             puntos_J1 += PUNTOS_FINAL_ROBO;
@@ -634,6 +641,9 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
     }else if(ganador == 1){
 
         puntos_J2 += PUNTOS_POR_VICTORIA;
+
+        total_bien_ubicadas_inicio = bien_ubicadas_inicio_J2*PUNTOS_BIEN_UBICADAS_INICIO;
+        puntos_J2 += total_bien_ubicadas_inicio;
 
         if(ultimo_evento == 3){
             puntos_J2 += PUNTOS_FINAL_ROBO;
@@ -664,6 +674,12 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
     cout << "Cartas mal ubicadas del rival x" << cartas_mal_ubicadas << "             +" <<total_mala_ubicacion << endl;
     cout << "Sin pasar de turno                           +" << total_sin_pasar << endl;
     cout << "Sin haber sufrido un robo del rival          +" << total_sin_robo << endl;
+    if(ganador == 0){
+        cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J1 << "               +" << total_bien_ubicadas_inicio << endl;
+    }else if(ganador == 1){
+        cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J2 << "               +" << total_bien_ubicadas_inicio << endl;
+    }
+         
     cout << "--------------------------------------------------------------" << endl;
     
     if(ganador == 0){
@@ -689,6 +705,7 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
 //Saida: Ejecuta la partida y guarda los puntos en caso de que corresponda.
 int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], bool &primera_partida){
     int regreso;
+    
 
     srand(time(NULL));
     string mazo_completo[CARTAS_TOTALES]= {"10 CORAZON","10 PICA","10 TREBOL","10 DIAMANTE",
@@ -709,6 +726,8 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     
     //datos para suma de puntos
     int ganador;
+    int bien_ubicadas_inicio_J1;
+    int bien_ubicadas_inicio_J2;
 
     bool J1_robado = false;
     bool J2_robado = false;
@@ -724,10 +743,21 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     }
 
     repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
+    
+    //imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+    bien_ubicadas_inicio_J1 = 5 - contar_mal_ubicadas(cartas_J1,mazo_completo);
+    bien_ubicadas_inicio_J2 = 5 - contar_mal_ubicadas(cartas_J2,mazo_completo);
+
+    cout << endl;
+    cout << "Cartas servidas J1: " << bien_ubicadas_inicio_J1 << endl;
+    cout << "Cartas servidas J2: " << bien_ubicadas_inicio_J2 << endl;
+    
 
     while(mano_en_orden(cartas_J1,cartas_J2, mazo_completo)){
         mezclar_mazo_completo(mazo_completo, posiciones_cartas);
         repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
+        bien_ubicadas_inicio_J1 = 5 - contar_mal_ubicadas(cartas_J1,mazo_completo);
+        bien_ubicadas_inicio_J2 = 5 - contar_mal_ubicadas(cartas_J2,mazo_completo);
     }
     
     inicio = quien_arranca(mazo_completo,cartas_J1,cartas_J2);
@@ -759,7 +789,7 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
         carta_bloqueada_J2, ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno,ganador);
     }
 
-    sumar_e_imprimir_puntos(puntajes,ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno, ganador, mazo_completo, cartas_J1, cartas_J2,jugadores);
+    sumar_e_imprimir_puntos(puntajes,ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno, ganador, mazo_completo, cartas_J1, cartas_J2,jugadores, bien_ubicadas_inicio_J1, bien_ubicadas_inicio_J2);
 
     cout << endl << "Ingrese 1 para regresar al menú principal: ";
     cin >> regreso;
