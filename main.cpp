@@ -594,7 +594,7 @@ int contar_mal_ubicadas(int jugador[CARTAS_JUGADOR], string mazo_completo[CARTAS
 //Salida: Imprime por pantalla el resultado de la partida.
 void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool J1_robado,bool J2_robado,bool J1_salta_turno,bool J2_salta_turno, int ganador, 
   string mazo_completo[CARTAS_TOTALES], int cartas_J1[CARTAS_JUGADOR], int cartas_J2[CARTAS_JUGADOR],string jugadores[MAX_JUGADORES],
-  int bien_ubicadas_inicio_J1,int bien_ubicadas_inicio_J2){
+  int bien_ubicadas_inicio_J1,int bien_ubicadas_inicio_J2,bool mano_racista_J1, bool mano_racista_J2){
 
     int const PUNTOS_POR_VICTORIA = 15;
     int const PUNTOS_FINAL_ROBO = 10;
@@ -602,6 +602,7 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
     int const PUNTOS_SIN_PASAR = 10;
     int const PUNTOS_SIN_ROBO = 5;
     int const PUNTOS_BIEN_UBICADAS_INICIO = 5;
+    int const PUNTOS_NO_RACISTA = 100;
 
     int puntos_J1 = 0;
     int puntos_J2 = 0;
@@ -611,94 +612,153 @@ void sumar_e_imprimir_puntos(int puntajes[MAX_JUGADORES],int ultimo_evento,bool 
     int total_sin_pasar = 0;
     int total_sin_robo = 0;
     int total_bien_ubicadas_inicio = 0;
+    int no_racista_J1 = 0;
+    int no_racista_J2 = 0;
     
-    if(ganador == 0){
-        puntos_J1 += PUNTOS_POR_VICTORIA;
+    if(mano_racista_J1){
+        puntos_J2 = PUNTOS_NO_RACISTA;
+        no_racista_J2 = PUNTOS_NO_RACISTA;
 
-        total_bien_ubicadas_inicio = bien_ubicadas_inicio_J1*PUNTOS_BIEN_UBICADAS_INICIO;
-        puntos_J1 += total_bien_ubicadas_inicio;
-
-        if(ultimo_evento == 3){
-            puntos_J1 += PUNTOS_FINAL_ROBO;
-            total_final_robo = PUNTOS_FINAL_ROBO;
-        }
-
-        cartas_mal_ubicadas = contar_mal_ubicadas(cartas_J2,mazo_completo);
-        total_mala_ubicacion = cartas_mal_ubicadas*PUNTOS_MALA_UBICACION;
-
-        puntos_J1 += total_mala_ubicacion;
-
-        if(!J1_salta_turno){
-            puntos_J1 += PUNTOS_SIN_PASAR;
-            total_sin_pasar = PUNTOS_SIN_PASAR;
-        }
-
-        if(!J1_robado){
-            puntos_J1 += PUNTOS_SIN_ROBO;
-            total_sin_robo = PUNTOS_SIN_ROBO;
-        }
-
-    }else if(ganador == 1){
-
-        puntos_J2 += PUNTOS_POR_VICTORIA;
-
-        total_bien_ubicadas_inicio = bien_ubicadas_inicio_J2*PUNTOS_BIEN_UBICADAS_INICIO;
-        puntos_J2 += total_bien_ubicadas_inicio;
-
-        if(ultimo_evento == 3){
-            puntos_J2 += PUNTOS_FINAL_ROBO;
-            total_final_robo = PUNTOS_FINAL_ROBO;
-        }
-
-        cartas_mal_ubicadas = contar_mal_ubicadas(cartas_J1,mazo_completo);
-        total_mala_ubicacion = cartas_mal_ubicadas*PUNTOS_MALA_UBICACION;
-
-        puntos_J2 += total_mala_ubicacion;
-
-        if(!J2_salta_turno){
-            puntos_J2 += PUNTOS_SIN_PASAR;
-            total_sin_pasar = PUNTOS_SIN_PASAR;
-        }
-
-        if(!J2_robado){
-            puntos_J2 += PUNTOS_SIN_ROBO;
-            total_sin_robo = PUNTOS_SIN_ROBO;
-        }
-    }
-    cout << "CLUTCH" << endl;
-    cout <<"---------------------------------------------------------------" << endl << endl;
-    cout <<"HITO    :                                      " << jugadores[ganador] << endl;
-    cout <<"---------------------------------------------------------------" << endl;
-    cout << "Ganar la partida:                            +" << PUNTOS_POR_VICTORIA << endl;
-    cout << "Robo ultima carta al jugador rival           +" << total_final_robo << endl;
-    cout << "Cartas mal ubicadas del rival x" << cartas_mal_ubicadas << "             +" <<total_mala_ubicacion << endl;
-    cout << "Sin pasar de turno                           +" << total_sin_pasar << endl;
-    cout << "Sin haber sufrido un robo del rival          +" << total_sin_robo << endl;
-    if(ganador == 0){
-        cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J1 << "               +" << total_bien_ubicadas_inicio << endl;
-    }else if(ganador == 1){
-        cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J2 << "               +" << total_bien_ubicadas_inicio << endl;
-    }
-         
-    cout << "--------------------------------------------------------------" << endl;
-    
-    if(ganador == 0){
-        cout << "TOTAL                                         " << puntos_J1 << endl << endl;
-        cout << "GANADOR: " << jugadores[0] << " con " << puntos_J1 << " puntos de victoria." << endl << endl;
-    }else if(ganador == 1){
+        cout << "CLUTCH" << endl;
+        cout <<"---------------------------------------------------------------" << endl << endl;
+        cout <<"HITO    :                                      " << jugadores[ganador] << endl;
+        cout <<"---------------------------------------------------------------" << endl;
+        cout << jugadores[0] << " TIENE MANO RACISTA                        +" << no_racista_J2 << endl;
+        cout << "--------------------------------------------------------------" << endl;  
         cout << "TOTAL                                         " << puntos_J2 << endl << endl;
         cout << "GANADOR: " << jugadores[1] << " con " << puntos_J2 << " puntos de victoria." << endl << endl;
-    }
+    
+    }else if(mano_racista_J2){
+        puntos_J1 = PUNTOS_NO_RACISTA;
+        no_racista_J1 = PUNTOS_NO_RACISTA;
 
+        cout << "CLUTCH" << endl;
+        cout <<"---------------------------------------------------------------" << endl << endl;
+        cout <<"HITO    :                                      " << jugadores[ganador] << endl;
+        cout <<"---------------------------------------------------------------" << endl;
+        cout << jugadores[1] << " TIENE MANO RACISTA                        +" << no_racista_J1 << endl;
+        cout << "--------------------------------------------------------------" << endl;  
+        cout << "TOTAL                                         " << puntos_J1 << endl << endl;
+        cout << "GANADOR: " << jugadores[0] << " con " << puntos_J1 << " puntos de victoria." << endl << endl;
+
+    }
+    else{
+
+        if(ganador == 0){
+            puntos_J1 += PUNTOS_POR_VICTORIA;
+
+            total_bien_ubicadas_inicio = bien_ubicadas_inicio_J1*PUNTOS_BIEN_UBICADAS_INICIO;
+            puntos_J1 += total_bien_ubicadas_inicio;
+
+            if(ultimo_evento == 3){
+                puntos_J1 += PUNTOS_FINAL_ROBO;
+                total_final_robo = PUNTOS_FINAL_ROBO;
+            }
+
+            cartas_mal_ubicadas = contar_mal_ubicadas(cartas_J2,mazo_completo);
+            total_mala_ubicacion = cartas_mal_ubicadas*PUNTOS_MALA_UBICACION;
+
+            puntos_J1 += total_mala_ubicacion;
+
+            if(!J1_salta_turno){
+                puntos_J1 += PUNTOS_SIN_PASAR;
+                total_sin_pasar = PUNTOS_SIN_PASAR;
+            }
+
+            if(!J1_robado){
+                puntos_J1 += PUNTOS_SIN_ROBO;
+                total_sin_robo = PUNTOS_SIN_ROBO;
+            }
+
+        }else if(ganador == 1){
+
+            puntos_J2 += PUNTOS_POR_VICTORIA;
+
+            total_bien_ubicadas_inicio = bien_ubicadas_inicio_J2*PUNTOS_BIEN_UBICADAS_INICIO;
+            puntos_J2 += total_bien_ubicadas_inicio;
+
+            if(ultimo_evento == 3){
+                puntos_J2 += PUNTOS_FINAL_ROBO;
+                total_final_robo = PUNTOS_FINAL_ROBO;
+            }
+
+            cartas_mal_ubicadas = contar_mal_ubicadas(cartas_J1,mazo_completo);
+            total_mala_ubicacion = cartas_mal_ubicadas*PUNTOS_MALA_UBICACION;
+
+            puntos_J2 += total_mala_ubicacion;
+
+            if(!J2_salta_turno){
+                puntos_J2 += PUNTOS_SIN_PASAR;
+                total_sin_pasar = PUNTOS_SIN_PASAR;
+            }
+
+            if(!J2_robado){
+                puntos_J2 += PUNTOS_SIN_ROBO;
+                total_sin_robo = PUNTOS_SIN_ROBO;
+            }
+        }
+        cout << "CLUTCH" << endl;
+        cout <<"---------------------------------------------------------------" << endl << endl;
+        cout <<"HITO    :                                      " << jugadores[ganador] << endl;
+        cout <<"---------------------------------------------------------------" << endl;
+        cout << "Ganar la partida:                            +" << PUNTOS_POR_VICTORIA << endl;
+        cout << "Robo ultima carta al jugador rival           +" << total_final_robo << endl;
+        cout << "Cartas mal ubicadas del rival x" << cartas_mal_ubicadas << "             +" <<total_mala_ubicacion << endl;
+        cout << "Sin pasar de turno                           +" << total_sin_pasar << endl;
+        cout << "Sin haber sufrido un robo del rival          +" << total_sin_robo << endl;
+        if(ganador == 0){
+            cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J1 << "               +" << total_bien_ubicadas_inicio << endl;
+        }else if(ganador == 1){
+            cout << "Cartas servidas al repartir x" << bien_ubicadas_inicio_J2 << "               +" << total_bien_ubicadas_inicio << endl;
+        }
+         
+        cout << "--------------------------------------------------------------" << endl;
+    
+        if(ganador == 0){
+            cout << "TOTAL                                         " << puntos_J1 << endl << endl;
+            cout << "GANADOR: " << jugadores[0] << " con " << puntos_J1 << " puntos de victoria." << endl << endl;
+        }else if(ganador == 1){
+            cout << "TOTAL                                         " << puntos_J2 << endl << endl;
+            cout << "GANADOR: " << jugadores[1] << " con " << puntos_J2 << " puntos de victoria." << endl << endl;
+        }
+
+        
+    }
 
     if(puntos_J1 > puntajes[0]){
         puntajes[0] = puntos_J1;
     }else if(puntos_J2 > puntajes[1]){
         puntajes[1] = puntos_J2;
     }
+}
 
-    
+//Entrada: recibe el vector de un jugador y el mazo de cartas.
+//Salida: Devuelve si la mano del jugador es racista(tiene 3 "K" seguidas).
+bool es_racista(int Jugador[CARTAS_JUGADOR],string mazo_completo[CARTAS_TOTALES]){
 
+    if(mazo_completo[Jugador[0]- 1]== "K CORAZON" || mazo_completo[Jugador[0]-1] == "K PICA" || mazo_completo[Jugador[0] -1 ] == "K TREBOL" || mazo_completo[Jugador[0]-1]== "K DIAMANTE"){
+        if(mazo_completo[Jugador[1]- 1]== "K CORAZON" || mazo_completo[Jugador[1]-1] == "K PICA" || mazo_completo[Jugador[1] -1 ] == "K TREBOL" || mazo_completo[Jugador[1]-1]== "K DIAMANTE"){
+            if(mazo_completo[Jugador[2]- 1]== "K CORAZON" || mazo_completo[Jugador[2]-1] == "K PICA" || mazo_completo[Jugador[2] -1 ] == "K TREBOL" || mazo_completo[Jugador[2]-1]== "K DIAMANTE"){
+                return true;
+            }
+        }
+    }
+    if(mazo_completo[Jugador[1]- 1]== "K CORAZON" || mazo_completo[Jugador[1]- 1] == "K PICA" || mazo_completo[Jugador[1] -1 ] == "K TREBOL" || mazo_completo[Jugador[1]-1]== "K DIAMANTE"){
+        if(mazo_completo[Jugador[2]- 1]== "K CORAZON" || mazo_completo[Jugador[2]- 1] == "K PICA" || mazo_completo[Jugador[2] -1 ] == "K TREBOL" || mazo_completo[Jugador[2]-1]== "K DIAMANTE"){
+            if(mazo_completo[Jugador[3]- 1]== "K CORAZON" || mazo_completo[Jugador[3]- 1] == "K PICA" || mazo_completo[Jugador[3] -1 ] == "K TREBOL" || mazo_completo[Jugador[3]-1]== "K DIAMANTE"){
+                return true;
+            }
+        }
+    }
+    if(mazo_completo[Jugador[2]- 1]== "K CORAZON" || mazo_completo[Jugador[2]- 1] == "K PICA" || mazo_completo[Jugador[2] -1 ] == "K TREBOL" || mazo_completo[Jugador[2]-1]== "K DIAMANTE"){
+        if(mazo_completo[Jugador[3]- 1]== "K CORAZON" || mazo_completo[Jugador[3]- 1] == "K PICA" || mazo_completo[Jugador[3] -1 ] == "K TREBOL" || mazo_completo[Jugador[3]-1]== "K DIAMANTE"){
+            if(mazo_completo[Jugador[4]- 1]== "K CORAZON" || mazo_completo[Jugador[4]- 1] == "K PICA" || mazo_completo[Jugador[4] -1 ] == "K TREBOL" || mazo_completo[Jugador[4]-1]== "K DIAMANTE"){
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //Entrada: Recibe el vector de jugadores y los puntajes.
@@ -734,6 +794,8 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     int ultimo_evento;
     bool J1_salta_turno = false;
     bool J2_salta_turno = false;
+    bool mano_racista_J1 = false;
+    bool mano_racista_J2 = false;
    
     mezclar_mazo_completo(mazo_completo, posiciones_cartas); 
     
@@ -744,7 +806,6 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
 
     repartir_cartas(posiciones_cartas, cartas_restantes, cartas_J1, cartas_J2);
     
-    //imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
     bien_ubicadas_inicio_J1 = 5 - contar_mal_ubicadas(cartas_J1,mazo_completo);
     bien_ubicadas_inicio_J2 = 5 - contar_mal_ubicadas(cartas_J2,mazo_completo);
 
@@ -783,13 +844,30 @@ int cargar_juego(string jugadores[MAX_JUGADORES], int puntajes[MAX_JUGADORES], b
     }else if(inicio == 1){
         cout << endl<< "Arranca: " << jugadores[inicio] << endl;
     }
+
+/*  
+    comprobacion mano racista
+    //cartas_J2[0] = 13;
+    //cartas_J2[1] = 14;
+    //cartas_J2[2] = 15;
+*/
+    mano_racista_J1 = es_racista(cartas_J1,mazo_completo);
+    mano_racista_J2 = es_racista(cartas_J2,mazo_completo);
     
-    while(!mano_ordenada){
+    while(!mano_ordenada && !mano_racista_J1 && !mano_racista_J2){
         jugar_ronda(jugadores,mazo_completo,cartas_J1,cartas_J2,cartas_restantes,mano_ordenada,inicio,ronda,carta_bloqueada_J1 , 
         carta_bloqueada_J2, ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno,ganador);
     }
 
-    sumar_e_imprimir_puntos(puntajes,ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno, ganador, mazo_completo, cartas_J1, cartas_J2,jugadores, bien_ubicadas_inicio_J1, bien_ubicadas_inicio_J2);
+    if(mano_racista_J1){
+        imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+        ganador = 1;
+    } else if (mano_racista_J2){
+        imprimir_cartas(mazo_completo,cartas_J1, cartas_J2, jugadores);
+        ganador = 0;
+    }
+
+    sumar_e_imprimir_puntos(puntajes,ultimo_evento, J1_robado, J2_robado, J1_salta_turno, J2_salta_turno, ganador, mazo_completo, cartas_J1, cartas_J2,jugadores, bien_ubicadas_inicio_J1, bien_ubicadas_inicio_J2,mano_racista_J1,mano_racista_J2);
 
     cout << endl << "Ingrese 1 para regresar al menú principal: ";
     cin >> regreso;
